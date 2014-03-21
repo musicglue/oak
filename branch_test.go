@@ -20,6 +20,13 @@ var _ = Describe("Branch", func() {
 		branch = NewBranch()
 	})
 
+	Describe("Constuctor", func() {
+		It("Should build a proper Branch", func() {
+			Expect(branch.Value).To(BeNil())
+			Expect(len(branch.Branches)).To(Equal(0))
+		})
+	})
+
 	Describe("Get", func() {
 		var (
 			req1 = Options{Path: []string{}, Value: "Home"}
