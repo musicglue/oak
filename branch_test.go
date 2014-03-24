@@ -72,6 +72,40 @@ var _ = Describe("Branch", func() {
 		})
 	})
 
+	Describe("Longest Match", func() {
+		var (
+			path1 = []string{"categories", "news", "latest", "headlines"}
+			req1  = Options{Path: path1, Value: "Headlines"}
+			path2 = []string{"categories"}
+			req2  = Options{Path: path2, Value: "Categories"}
+			reqs  = []Options{req1, req2}
+		)
+
+		BeforeEach(func() {
+			for _, req := range reqs {
+				branch.Set(req.Path, req.Value)
+			}
+		})
+
+		It("Should return the right score for a direct match", func() {
+			result, ok := branch.Match(path1)
+			Expect(result).To(Equal("Headlines"))
+			Expect(ok).To(BeTrue())
+		})
+
+		It("Should return the parent value on a missing key", func() {
+			result, ok := branch.Match([]string{"categories", "news", "latest"})
+			Expect(result).To(Equal("Categories"))
+			Expect(ok).To(BeTrue())
+		})
+
+		It("Should return the first only matching key if one match found", func() {
+			result, ok := branch.Match([]string{"categories"})
+			Expect(result).To(Equal("Categories"))
+			Expect(ok).To(BeTrue())
+		})
+	})
+
 	Describe("Set", func() {
 		var (
 			path = []string{"home"}

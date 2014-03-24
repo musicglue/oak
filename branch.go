@@ -42,6 +42,30 @@ func (b *Branch) Get(path []string) (value interface{}, exists bool) {
 	return res.Get(nesting)
 }
 
+// Match accepts a ([]string) and returns the longest matching path with a
+// value, and a boolean to indicate whether or not there was a matching record
+func (b *Branch) Match(path []string) (value interface{}, exists bool) {
+	if len(path) == 0 {
+		return b.ownValue()
+	}
+
+	key := path[0]
+	newpath := path[1:]
+
+	res, ok := b.Branches[key]
+	if !ok {
+		// Path doesn't exist: return this node as possible best match
+		return b.ownValue()
+	}
+
+	value, ok = res.Match(newpath)
+	if ok {
+		return value, ok
+	}
+	// We haven't found a match yet, return this node
+	return b.ownValue()
+}
+
 // Set accepts a path ([]string) and a value (interface{}) and sets the
 // value of the relevant node in the tree to that interface.
 func (b *Branch) Set(path []string, value interface{}) {

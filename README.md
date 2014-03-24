@@ -33,5 +33,10 @@ func main() {
   if ok {
     fmt.Println("About Us resolves to:", about_us)
   }
+
+  fallover, ok := tree.Match([]string{"pages"})
+  if ok {
+    fmt.Println("Calling a non-extant key with Match returns the deepest extant value", fallover)
+  }
 }
 ```
